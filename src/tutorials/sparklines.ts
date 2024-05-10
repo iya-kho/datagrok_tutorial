@@ -1,6 +1,7 @@
 import * as grok from 'datagrok-api/grok';
 import { filter } from 'rxjs/operators';
 import { Tutorial } from '@datagrok-libraries/tutorials/src/tutorial';
+import { interval } from 'rxjs';
 
 
 export class SparklinesTutorial extends Tutorial {
@@ -24,40 +25,28 @@ export class SparklinesTutorial extends Tutorial {
     const view = grok.shell.tableView(this.t!.name);
     const grid = view.grid;
 
-    // Step 1
-    
-    const sparklinesMenuElement = document.querySelector('[d4-name="Sparklines"]') as HTMLElement;
+    // Step 1 
     const instructionsAdd = 'Add the Sparklines column to the table';
     const descriptionAdd = 'Right click any cell and select <b>Add</b> > <b>Summary Columns</b> > <b>Sparklines</b>';
 
-    await this.action(instructionsAdd, onClickPromise(sparklinesMenuElement), null, descriptionAdd);
+    await this.action(instructionsAdd, interval(1000).pipe(filter(() => grid.col('sparkline') != null)), null, descriptionAdd);
  
     // Step 2
     const burgerMenuElement = document.querySelector('div[column_name=""] > i.grok-icon.grok-font-icon-menu') as HTMLElement;
-    const inscructionsRename = 'Now, let\'s give the <b>sparklines</b> column a better name.';
-    const descriptionRename = '&#8226; Hover over the column\'s header and click the <b>Hamburger</b> icon.\n' +
-      '&#8226; Under <b>Actions</b>, select <b>Rename…</b>  A dialog opens.\n' +
+    const instructionsRename = 'Now, let\'s give the Sparklines column a better name.';
+    const descriptionRename = '&#8226; Hover over the column\'s header and click the <b>Hamburger</b> icon.<br>' +
+      '&#8226; Under <b>Actions</b>, select <b>Rename…</b>  A dialog opens.<br>' +
       '&#8226; In the dialog, enter <b>“H/W”</b> and click <b>OK</b>.';
 
-    await this.action(inscructionsRename, this.t!.onColumnNameChanged.pipe(filter(() =>
-      this.t!.currentCol.name === 'H/W')), burgerMenuElement, descriptionRename);
+    await this.action(instructionsRename, interval(1000).pipe(filter(() => grid.col('H/W') != null)), burgerMenuElement, descriptionRename);
 
     // Step 3
-    const okButton = document.querySelector('.d4-dialogue-footer .ui-btn-ok') as HTMLElement;
     const instructionsChangeCols = 'Now, let\'s change the columns selected for sparklines.';
-    const descriptionChangeCols = '&#8226; On the column\'s header, click the <b>Hamburger</b> icon.\n' +
-      '&#8226; Next to <b>Columns</b>, click the dropdown and deselect the <b>AGE</b> column.';
+    const descriptionChangeCols = '&#8226; On the column\'s header, click the <b>Hamburger</b> icon.<br>' +
+      '&#8226; Next to <b>Columns</b>, click the dropdown and deselect the <b>AGE</b> column.'; 
+    const sparklineCol = grid.col('H/W');
 
-    await this.action(instructionsChangeCols, onClickPromise(okButton), burgerMenuElement, descriptionChangeCols);
-
-    // Function to create a Promise that resolves when the element is clicked
-    function onClickPromise(element: HTMLElement) {
-      return new Promise<void>((resolve) => {
-        element.addEventListener('click', () => {
-          resolve();
-        });
-      });
-    }
+    await this.action(instructionsChangeCols, interval(1000).pipe(filter(() => sparklineCol?.settings.sparkline.columnNames.includes('AGE') == false)), burgerMenuElement, descriptionChangeCols);        
    
   }
 }

@@ -609,6 +609,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "rxjs/operators");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _datagrok_libraries_tutorials_src_tutorial__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @datagrok-libraries/tutorials/src/tutorial */ "./node_modules/@datagrok-libraries/tutorials/src/tutorial.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "rxjs");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(rxjs__WEBPACK_IMPORTED_MODULE_3__);
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -618,6 +620,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -641,32 +644,23 @@ class SparklinesTutorial extends _datagrok_libraries_tutorials_src_tutorial__WEB
             this.header.textContent = this.name;
             const view = datagrok_api_grok__WEBPACK_IMPORTED_MODULE_0__.shell.tableView(this.t.name);
             const grid = view.grid;
-            // Step 1
-            const sparklinesMenuElement = document.querySelector('[d4-name="Sparklines"]');
+            // Step 1 
             const instructionsAdd = 'Add the Sparklines column to the table';
             const descriptionAdd = 'Right click any cell and select <b>Add</b> > <b>Summary Columns</b> > <b>Sparklines</b>';
-            yield this.action(instructionsAdd, onClickPromise(sparklinesMenuElement), null, descriptionAdd);
+            yield this.action(instructionsAdd, (0,rxjs__WEBPACK_IMPORTED_MODULE_3__.interval)(1000).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.filter)(() => grid.col('sparkline') != null)), null, descriptionAdd);
             // Step 2
             const burgerMenuElement = document.querySelector('div[column_name=""] > i.grok-icon.grok-font-icon-menu');
-            const inscructionsRename = 'Now, let\'s give the <b>sparklines</b> column a better name.';
-            const descriptionRename = '&#8226; Hover over the column\'s header and click the <b>Hamburger</b> icon.\n' +
-                '&#8226; Under <b>Actions</b>, select <b>Rename…</b>  A dialog opens.\n' +
+            const instructionsRename = 'Now, let\'s give the Sparklines column a better name.';
+            const descriptionRename = '&#8226; Hover over the column\'s header and click the <b>Hamburger</b> icon.<br>' +
+                '&#8226; Under <b>Actions</b>, select <b>Rename…</b>  A dialog opens.<br>' +
                 '&#8226; In the dialog, enter <b>“H/W”</b> and click <b>OK</b>.';
-            yield this.action(inscructionsRename, this.t.onColumnNameChanged.pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.filter)(() => this.t.currentCol.name === 'H/W')), burgerMenuElement, descriptionRename);
+            yield this.action(instructionsRename, (0,rxjs__WEBPACK_IMPORTED_MODULE_3__.interval)(1000).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.filter)(() => grid.col('H/W') != null)), burgerMenuElement, descriptionRename);
             // Step 3
-            const okButton = document.querySelector('.d4-dialogue-footer .ui-btn-ok');
             const instructionsChangeCols = 'Now, let\'s change the columns selected for sparklines.';
-            const descriptionChangeCols = '&#8226; On the column\'s header, click the <b>Hamburger</b> icon.\n' +
+            const descriptionChangeCols = '&#8226; On the column\'s header, click the <b>Hamburger</b> icon.<br>' +
                 '&#8226; Next to <b>Columns</b>, click the dropdown and deselect the <b>AGE</b> column.';
-            yield this.action(instructionsChangeCols, onClickPromise(okButton), burgerMenuElement, descriptionChangeCols);
-            // Function to create a Promise that resolves when the element is clicked
-            function onClickPromise(element) {
-                return new Promise((resolve) => {
-                    element.addEventListener('click', () => {
-                        resolve();
-                    });
-                });
-            }
+            const sparklineCol = grid.col('H/W');
+            yield this.action(instructionsChangeCols, (0,rxjs__WEBPACK_IMPORTED_MODULE_3__.interval)(1000).pipe((0,rxjs_operators__WEBPACK_IMPORTED_MODULE_1__.filter)(() => (sparklineCol === null || sparklineCol === void 0 ? void 0 : sparklineCol.settings.sparkline.columnNames.includes('AGE')) == false)), burgerMenuElement, descriptionChangeCols);
         });
     }
 }
